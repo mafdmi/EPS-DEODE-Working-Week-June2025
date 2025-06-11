@@ -1,0 +1,15 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: root
+parts:
+  - caption: Intro
+    chapters:
+    - file: intro/eps_deode_intro
+  - caption: Examples
+    chapters:
+    - file: eps-config-examples/spp/spp_example
+  - caption: Visualization
+    chapters:
+    - file: visualization/using_dw_display

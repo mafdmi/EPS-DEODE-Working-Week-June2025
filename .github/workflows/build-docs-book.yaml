@@ -1,0 +1,53 @@
+name: Build docs
+
+# Run this when the master or main branch changes
+on:
+  push:
+    branches:
+    - master
+    - main
+  pull_request:
+    branches:
+    - master
+    - main
+
+# This job installs dependencies, builds the book, and pushes it to `gh-pages`
+jobs:
+  build-book:
+    name: Build Documentation Jupyter Book
+    runs-on: ubuntu-latest
+    permissions:
+      repository-projects: read
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      #----------------------------------------------
+      # Check-out repo and set-up uv
+      #----------------------------------------------
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        id: setup-uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH=$HOME/.local/bin:$PATH
+        
+      #----------------------------------------------
+      # Build the book
+      #----------------------------------------------
+      - name: Build the book
+        run: |
+          pwd
+          ls -al
+          uv run --with jupyter-book jupyter-book build --all .
+
+      #----------------------------------------------
+      # Upload the book's HTML as an artifact
+      #----------------------------------------------
+      - name: Upload artifact
+        if: github.event_name == 'push' # Only upload the artifact on push events, i.e. not on pull requests
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_build/html"

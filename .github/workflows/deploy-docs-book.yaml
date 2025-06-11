@@ -1,0 +1,53 @@
+name: Deploy docs
+
+# Run this when the "Build docs" workflow is complete
+on:
+  workflow_run:
+    workflows: [Build docs]
+    branches:
+    - master
+    - main
+    types: 
+      - completed
+
+# This job downloads the built documentation from the "Build docs" workflow
+# and deploys it to GitHub Pages
+jobs:
+  deploy-book:
+    name: Deploy Documentation Jupyter Book
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      actions: read
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      #----------------------------------------------
+      # In order to deploy to GitHub Pages, we need to first download the artifact
+      # from the triggering workflow, and then upload it to the current
+      # workflow to make it available to actions/deploy-pages
+      #----------------------------------------------
+      - name: Download build artifact from triggered workflow
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          name: github-pages  # The name of the artifact to download
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages  # The name of the artifact to upload
+          path: ./artifact.tar  # The path to archive in the artifact
+
+      #----------------------------------------------
+      # Deploy the book's HTML to GitHub Pages
+      #----------------------------------------------
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
