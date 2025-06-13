@@ -10,6 +10,10 @@ parts:
   - caption: Examples
     chapters:
     - file: eps-config-examples/spp/spp_example
+    - file: eps-config-examples/existing_boundary_data/existing_boundary_data
+  - caption: EPS products
+    chapters:
+    - file: eps-products/eps_upscaling
   - caption: Visualization
     chapters:
     - file: visualization/using_dw_display
