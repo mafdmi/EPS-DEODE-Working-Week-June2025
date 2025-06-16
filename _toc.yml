@@ -6,6 +6,7 @@ root: root
 parts:
   - caption: Intro
     chapters:
+    - file: intro/update_install_deode
     - file: intro/eps_deode_intro
   - caption: Examples
     chapters:
